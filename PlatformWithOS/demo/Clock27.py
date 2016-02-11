@@ -24,7 +24,8 @@ import time
 from EPD import EPD
 import smbus
 
-bus = smbus.SMBus(1)
+#bus = smbus.SMBus(1) <---- Updated to work with PaPiRus Hat
+bus = smbus.SMBus
 addr_temp = 0x49
 
 WHITE = 1
@@ -97,7 +98,8 @@ WEEKDAY_Y = 3
 
 # temperature
 TEMP_FONT_SIZE = 20
-TEMP_X = 5
+#TEMP_X = 5  <---- Updated centering
+TEMP_X = 36
 TEMP_Y = 80
 
 # time
@@ -136,9 +138,11 @@ def get_temp():
 #	results = bus.read_i2c_block_data(addr_temp,0)
 #	Temp = results[0] << 8 | results[1]
 #	Temp = Temp >> 5
-	output = subprocess.check_output(["cat", "/dev/epd/temperature"])
-	Temp = int(output)*10
-	Temp = float(Temp/10)
+#	output = subprocess.check_output(["cat", "/dev/epd/temperature"])
+#	Temp = int(output)*10
+#	Temp = float(Temp/10)
+	output = subprocess.check_output(["cat", "/sys/class/thermal/thermal_zone0/temp"]) #Grab temperature from onboard sensor
+	Temp = int(output)/1000
 	return Temp
 
 
